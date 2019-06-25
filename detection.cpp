@@ -18,6 +18,7 @@ int main(){
     std::vector<cv::KeyPoint> keypoints1, keypoints2;
     cv::Mat descriptors1, descriptors2;
     sift->detectAndCompute(jiangshi, cv::noArray(), keypoints1, descriptors1);
+    // need this
     sift->detectAndCompute(test, cv::noArray(), keypoints2, descriptors2);
 
     // Step 2: matching the descriptor vectors with a FLANN based matcher
@@ -36,7 +37,7 @@ int main(){
 
 
     // Draw matches
-    cv::Mat img_matches;
+    cv::Mat img_matches = test;
     // Checks if there are enough matches for it to say whether it detected the vampire
     // using https://docs.opencv.org/3.1.0/d7/dff/tutorial_feature_homography.html and
     // https://opencv-python-tutroals.readthedocs.io/en/latest/py_tutorials/py_feature2d/py_feature_homography/py_feature_homography.html
@@ -44,8 +45,8 @@ int main(){
         std::vector<cv::Point2f> src_pts;
         std::vector<cv::Point2f> dst_pts;
         // the below line draws the vectors showing the jiangshi feature matches
-        cv::drawMatches( jiangshi, keypoints1, test, keypoints2, good_matches, img_matches, cv::Scalar::all(-1),
-                        cv::Scalar::all(-1), std::vector<char>(), cv::DrawMatchesFlags::NOT_DRAW_SINGLE_POINTS );
+        // cv::drawMatches( jiangshi, keypoints1, test, keypoints2, good_matches, img_matches, cv::Scalar::all(-1),
+        //                 cv::Scalar::all(-1), std::vector<char>(), cv::DrawMatchesFlags::NOT_DRAW_SINGLE_POINTS );
 
         for( cv::DMatch x : good_matches){
             src_pts.push_back(keypoints1[x.queryIdx].pt);
@@ -60,15 +61,32 @@ int main(){
         
         perspectiveTransform( obj_corners, scene_corners, H);
 
-        //-- Draw lines between the corners (the mapped object in the scene - image_2 )
-        line( img_matches, scene_corners[0] + cv::Point2f( jiangshi.cols, 0), scene_corners[1] + cv::Point2f( jiangshi.cols, 0), cv::Scalar(0, 255, 0), 4 );
-        line( img_matches, scene_corners[1] + cv::Point2f( jiangshi.cols, 0), scene_corners[2] + cv::Point2f( jiangshi.cols, 0), cv::Scalar( 0, 255, 0), 4 );
-        line( img_matches, scene_corners[2] + cv::Point2f( jiangshi.cols, 0), scene_corners[3] + cv::Point2f( jiangshi.cols, 0), cv::Scalar( 0, 255, 0), 4 );
-        line( img_matches, scene_corners[3] + cv::Point2f( jiangshi.cols, 0), scene_corners[0] + cv::Point2f( jiangshi.cols, 0), cv::Scalar( 0, 255, 0), 4 );
-
+        // Draws the square on the scene image
+        line( img_matches, scene_corners[0], scene_corners[1], cv::Scalar(0, 0, 255), 10 );
+        line( img_matches, scene_corners[1], scene_corners[2], cv::Scalar( 0, 0, 255), 10 );
+        line( img_matches, scene_corners[2], scene_corners[3], cv::Scalar( 0, 0, 255), 10 );
+        line( img_matches, scene_corners[3], scene_corners[0], cv::Scalar( 0, 0, 255), 10 );
     }
     cv::resize(img_matches, img_matches, cv::Size(), 0.2, 0.2 );
-    cv::imshow("Good Matches", img_matches);
-    cv::waitKey();
+    //cv::imwrite("Image.jpg", img_matches);
+    //cv::imshow("Good Matches", img_matches);
+    
+    // capture video from webcam
+    cv::VideoCapture cap(0);
+    cv::Mat edges;
+    while(1){
+        cv::Mat frame;
+        cv::Mat gray_frame;
+        cap >> frame;
+
+        //perform operations
+        cvtColor(frame, gray_frame, cv::COLOR_BGR2GRAY);
+        
+        // show frame
+        imshow("frame", frame);
+        if(cv::waitKey(30) >= 0) break;
+    }
+    cap.release();
+    cv::destroyAllWindows();
     return 0;
 }
