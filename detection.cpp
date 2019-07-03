@@ -67,26 +67,27 @@ int main(){
         line( img_matches, scene_corners[2], scene_corners[3], cv::Scalar( 0, 0, 255), 10 );
         line( img_matches, scene_corners[3], scene_corners[0], cv::Scalar( 0, 0, 255), 10 );
     }
-    cv::resize(img_matches, img_matches, cv::Size(), 0.2, 0.2 );
     //cv::imwrite("Image.jpg", img_matches);
     //cv::imshow("Good Matches", img_matches);
-    
+    cv::resize(img_matches, img_matches, cv::Size(), 0.2, 0.2 );
+    cv::imshow("Good Matches", img_matches);
+    cv::waitKey();
     // capture video from webcam
-    cv::VideoCapture cap(0);
-    cv::Mat edges;
-    while(1){
-        cv::Mat frame;
-        cv::Mat gray_frame;
-        cap >> frame;
+    // cv::VideoCapture cap(0);
+    // cv::Mat edges;
+    // while(1){
+    //     cv::Mat frame;
+    //     cv::Mat gray_frame;
+    //     cap >> frame;
 
-        //perform operations
-        cvtColor(frame, gray_frame, cv::COLOR_BGR2GRAY);
+    //     //perform operations
+    //     cvtColor(frame, gray_frame, cv::COLOR_BGR2GRAY);
         
-        // show frame
-        imshow("frame", frame);
-        if(cv::waitKey(30) >= 0) break;
-    }
-    cap.release();
-    cv::destroyAllWindows();
+    //     // show frame
+    //     imshow("frame", frame);
+    //     if(cv::waitKey(30) >= 0) break;
+    // }
+    // cap.release();
+    // cv::destroyAllWindows();
     return 0;
 }
