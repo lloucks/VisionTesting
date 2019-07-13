@@ -4,13 +4,13 @@ import numpy as np
 
 jiangshi = cv2.imread('images/Jiangshi_lg.png', 0)
 
-scale_percent = 40
+scale_percent = 20
 
-# width = int(jiangshi.shape[1] * scale_percent / 100)
-# height = int(jiangshi.shape[0] * scale_percent /100)
-# dim = (width,height)
+width = int(jiangshi.shape[1] * scale_percent / 100)
+height = int(jiangshi.shape[0] * scale_percent /100)
+dim = (width,height)
 
-# jiangshi = cv2.resize(jiangshi, dim, interpolation = cv2.INTER_AREA)
+jiangshi = cv2.resize(jiangshi, dim, interpolation = cv2.INTER_AREA)
 
 sift = cv2.xfeatures2d.SIFT_create()
 
@@ -30,7 +30,7 @@ height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
 
 while True:
     ret, frame = cap.read()
-    #frame = cv2.imread('images/test1.jpg')
+    
     # Operations
     gray_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
 
@@ -50,13 +50,10 @@ while True:
                   flags=0)
     
     flann_matches = cv2.drawMatchesKnn(jiangshi,kp1,gray_frame,kp2,matches,None,**draw_params)
-
-    width = int(flann_matches.shape[1] * scale_percent / 100)
-    height = int(flann_matches.shape[0] * scale_percent /100)
-    dim = (width,height)
-
-    flann_matches = cv2.resize(flann_matches, dim, interpolation = cv2.INTER_AREA)
+    
     # Show image
+    cv2.namedWindow('detection', cv2.WINDOW_NORMAL)
+    cv2.resizeWindow('detection', 600,600)
     cv2.imshow('frame', flann_matches)
 
     if cv2.waitKey(1) & 0xFF == ord('q'):
