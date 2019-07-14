@@ -33,7 +33,7 @@ int main(){
         matcher->knnMatch( descriptors1, descriptors2, knn_matches, 2);
 
         // Filter matches using the Lowe's ratio test
-        const float ratio_thresh = 0.7f;
+        const float ratio_thresh = 0.6f;
         std::vector<cv::DMatch> good_matches;
         for (size_t i = 0; i < knn_matches.size(); i++){
             if ( knn_matches[i][0].distance < ratio_thresh * knn_matches[i][1].distance){
@@ -58,15 +58,12 @@ int main(){
             
             if ( !H.empty() ){
                 cv::perspectiveTransform( obj_corners, scene_corners, H);
-                // Draws the square on the scene image
-                cv::line( gray_frame, scene_corners[0], scene_corners[1], cv::Scalar(0, 0, 255), 10 );
-                cv::line( gray_frame, scene_corners[1], scene_corners[2], cv::Scalar( 0, 0, 255), 10 );
-                cv::line( gray_frame, scene_corners[2], scene_corners[3], cv::Scalar( 0, 0, 255), 10 );
-                cv::line( gray_frame, scene_corners[3], scene_corners[0], cv::Scalar( 0, 0, 255), 10 );
+                cv::Rect rect(scene_corners[0], scene_corners[2]);
+                cv::rectangle(frame, rect, cv::Scalar(0,0,255), 3);
             }
 
         }
-        cv::imshow("frame", gray_frame);
+        cv::imshow("frame", frame);
         if(cv::waitKey(30) >= 0) break;
 
     }
