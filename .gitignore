@@ -4,3 +4,7 @@ opencv_contrib-master/
 test*
 2019-*/
 *.zip
+*.MTS
+*.avi
+*.mp4
+*.mp3
